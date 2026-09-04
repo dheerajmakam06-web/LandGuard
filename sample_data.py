@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from math import asin, cos, radians, sin, sqrt
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -32,6 +33,8 @@ SAFE_PLACES = [
     ("Agartala Relief Camp", "Tripura", 23.8450, 91.2800, "Agartala Town Hall"),
 ]
 
+INDIA_TIMEZONE = ZoneInfo("Asia/Kolkata")
+
 
 def _distance_km(latitude: float, longitude: float, place_latitude: float, place_longitude: float) -> float:
     earth_radius_km = 6371
@@ -57,7 +60,7 @@ def find_nearest_safe_place(latitude: float, longitude: float) -> dict[str, str 
 
 def generate_sensor_data(hours: int = 72, seed: int = 7) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
-    now = datetime.now().replace(minute=0, second=0, microsecond=0)
+    now = datetime.now(INDIA_TIMEZONE).replace(minute=0, second=0, microsecond=0)
     rows: list[dict] = []
     for hour in range(hours):
         timestamp = now - timedelta(hours=hours - hour - 1)

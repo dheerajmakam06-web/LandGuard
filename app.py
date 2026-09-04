@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import time
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import plotly.express as px
@@ -10,6 +11,8 @@ import streamlit as st
 
 from risk_engine import score_dataframe
 from sample_data import find_nearest_safe_place, generate_sensor_data
+
+INDIA_TIMEZONE = ZoneInfo("Asia/Kolkata")
 
 st.set_page_config(page_title="LandGuard | NER Early Warning", page_icon="⛰️", layout="wide")
 
@@ -57,7 +60,7 @@ view = latest if selected_state == "All states" else latest[latest["state"] == s
 critical = int((latest["risk_level"] == "CRITICAL").sum())
 high = int((latest["risk_level"] == "HIGH").sum())
 latest_timestamp = latest["timestamp"].max()
-current_time = datetime.now()
+current_time = datetime.now(INDIA_TIMEZONE)
 
 # Compare each node with its recent baseline so rising risk is visible before it reaches HIGH.
 recent = data[data["timestamp"] >= latest_timestamp - pd.Timedelta(hours=6)]
@@ -187,7 +190,7 @@ if page == "Overview":
 
 elif page == "Live Monitoring":
     st.subheader("Sensor telemetry")
-    st.info(f"Dashboard time: {datetime.now().strftime('%d %B %Y, %H:%M:%S')} · Last sensor update: {latest_timestamp.strftime('%d %B %Y, %H:%M')}")
+    st.info(f"Dashboard time: {datetime.now(INDIA_TIMEZONE).strftime('%d %B %Y, %H:%M:%S')} IST · Last sensor update: {latest_timestamp.strftime('%d %B %Y, %H:%M')} IST")
     district = st.selectbox("Select monitoring node", sorted(view["district"].unique()))
     history = data[data["district"] == district].sort_values("timestamp").tail(48)
     a, b = st.columns(2)
