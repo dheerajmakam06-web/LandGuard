@@ -113,7 +113,7 @@ streamlit run app.py
 
 Open the local address shown in the terminal, normally:
 
-**http://localhost:8501**
+**https://landguard-ai.streamlit.app/**
 
 Use the left sidebar to open Overview, Live Monitoring, Risk Assessment, Alerts & Response, or Project Notes & Graphs.
 
